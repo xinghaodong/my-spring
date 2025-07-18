@@ -1,0 +1,15 @@
+# 服务配置
+server:
+  port: 8888  # 使用新端口
+
+# Spring配置
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/nestdatabase?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+   configuration:
+     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

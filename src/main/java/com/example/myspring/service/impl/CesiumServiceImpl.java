@@ -1,50 +1,48 @@
 package com.example.myspring.service.impl;
 
 
-
-import com.example.myspring.dto.CesiumDTO;
-import com.example.myspring.dto.WaypointDTO;
 import com.example.myspring.entity.Cesium;
-import com.example.myspring.repository.CesiumRepository;
+import com.example.myspring.entity.Waypoint;
+import com.example.myspring.mapper.CesiumMapper;
+import com.example.myspring.mapper.WaypointMapper;
 import com.example.myspring.service.CesiumService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CesiumServiceImpl implements CesiumService {
-
-    private final CesiumRepository cesiumRepository;
-
-    public CesiumServiceImpl(CesiumRepository cesiumRepository) {
-        this.cesiumRepository = cesiumRepository;
-    }
-
-
+    @Autowired
+    private CesiumMapper cesiumMapper;
+    @Autowired
+    private WaypointMapper waypointMapper;
 
     @Override
-    public List<CesiumDTO> getAll() {
-        return cesiumRepository.findAllProjectedBy(); // 改为 DTO 查询
-    }
-    @Override
-    public Optional<Cesium> getById(Integer id) {
-        return cesiumRepository.findById(id);
-    }
-
-
-    @Override
-    public Cesium save(Cesium cesium) {
-        return cesiumRepository.save(cesium);
+    public List<Cesium> getAll() {
+        return cesiumMapper.selectList(null);
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public Cesium getById(Integer id) {
+//       先查询 Cesium 数据
+        Cesium cesium = cesiumMapper.selectById(id);
+        if (cesium == null) {
+            return null;
+        }
+//      再查询 Waypoint 子表数据
+        System.out.println("查询到的数据：" + cesium);
+        List<Waypoint> waypoints = waypointMapper.selectByCesiumId(id);
+        cesium.setTempWaypoints(new HashSet<>(waypoints));
+        return cesium;
+    }
 
-    }
-//    查询详情
-    @Override
-    public Optional<CesiumDTO> getByIdProjectedBy(Integer id) {
-        return cesiumRepository.findByIdProjectedBy(id);
-    }
+
+//    @Override
+//    public List<CesiumDTO> getAll() {
+//        return CesiumMapper.findAllProjectedBy(); // 改为 DTO 查询
+//    }
+
+
 }

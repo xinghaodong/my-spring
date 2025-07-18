@@ -1,36 +1,31 @@
 package com.example.myspring.entity;
 
-import lombok.AllArgsConstructor;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import javax.persistence.GeneratedValue;
 import java.math.BigDecimal;
 
-@Entity
+@Data
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@TableName("waypoint") // 指定表名（如果表名与类名不同）
 public class Waypoint {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @TableId(type = IdType.AUTO) // 自增主键
     private Integer id;
 
-    @Column(precision = 18, scale = 15, nullable = false)
+    // 精度配置需在数据库表结构中定义，或通过 @TableField 指定字段名
+    @TableField("latitude")
     private BigDecimal latitude;
 
-    @Column(precision = 18, scale = 15, nullable = false)
+    @TableField("longitude")
     private BigDecimal longitude;
 
-    @Column(nullable = false)
+    @TableField("height")
     private Double height;
-
-
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-//    @JoinColumn(name = "route_id", nullable = false)
-//    private Cesium route;
 }
