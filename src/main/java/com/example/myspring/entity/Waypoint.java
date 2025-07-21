@@ -28,4 +28,9 @@ public class Waypoint {
 
     @TableField("height")
     private Double height;
+
+    // 添加与Cesium的关联字段
+    @TableField("route_id") // 如果数据库字段名是route_id
+    private Integer routeId;
+
 }

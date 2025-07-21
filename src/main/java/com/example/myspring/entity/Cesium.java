@@ -2,11 +2,13 @@ package com.example.myspring.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,15 +60,16 @@ public class Cesium {
     /**
      * 创建时间，不可更新
      */
+    @JsonProperty("created_at")
     @TableField(value = "created_at", fill = FieldFill.INSERT)
-    private Date createdAt; // 数据库: created_at (DATETIME)
+    private LocalDateTime createdAt; // 数据库: created_at (DATETIME)
 
     /**
      * 更新时间
      */
+    @JsonProperty("updated_at")
     @TableField(value = "updated_at", fill = FieldFill.UPDATE)
-    private Date updatedAt;
-
+    private LocalDateTime updatedAt;
 
     /**
      * 关联的临时航点集合，与Waypoint实体类的route属性关联

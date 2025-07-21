@@ -6,6 +6,7 @@ import com.example.myspring.service.CesiumService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cesium")
@@ -22,8 +23,10 @@ public class CesiumController {
      * @return
      */
     @GetMapping("/list")
-    public ResponseDto<List<Cesium>> getAll() {  // 明确指定泛型类型
-        return ResponseDto.success(cesiumService.getAll());
+    public ResponseDto<Map<String, Object>> getAll( @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int pageSize ) {
+        System.out.println(page);
+        System.out.println(pageSize);
+        return ResponseDto.success(cesiumService.getCesiumPage(page, pageSize));
     }
 
     /**
@@ -35,5 +38,28 @@ public class CesiumController {
     public ResponseDto<Cesium> getById(@RequestParam Integer id) {
         return ResponseDto.success(cesiumService.getById(id));
     }
+
+
+    /***
+     * 修改航线
+     * @param cesium
+     * @return
+     */
+    @PostMapping("/update")
+    public ResponseDto<Cesium> updateCesium(@RequestBody Cesium cesium) {
+        return ResponseDto.success(cesiumService.updateCesium(cesium));
+    }
+    /***
+     * 删除航线
+     * @param
+     * @return
+     */
+    @PostMapping("/delete")
+    public ResponseDto<String> deleteCesium(@RequestBody Map<String, Integer> request) {
+        Integer id = request.get("id");
+        cesiumService.deleteCesium(id);
+        return ResponseDto.success("删除成功",null);
+    }
+
 
 }
