@@ -36,4 +36,6 @@ public class CesiumController {
         return ResponseDto.success(cesiumService.getById(id));
     }
 
+    
+
 }
