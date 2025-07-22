@@ -13,5 +13,4 @@ spring:
 mybatis-plus:
    configuration:
      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#      映射成驼峰
-#     mapUnderscoreToCamelCase: true
+#     mapUnderscoreToCamelCase: true 映射成驼峰

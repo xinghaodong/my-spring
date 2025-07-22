@@ -23,7 +23,7 @@ public class CesiumController {
      * @return
      */
     @GetMapping("/list")
-    public ResponseDto<Map<String, Object>> getAll( @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int pageSize ) {
+    public ResponseDto<Map<String, Object>> getAll(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int pageSize ) {
         System.out.println(page);
         System.out.println(pageSize);
         return ResponseDto.success(cesiumService.getCesiumPage(page, pageSize));
