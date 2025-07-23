@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
 
 @TableName("internal_user")
 @Data
@@ -52,4 +52,12 @@ public class InternalUser {
     @JsonProperty("updated_at")
     @TableField(value = "updated_at", fill = FieldFill.UPDATE)
     private LocalDateTime updatedAt;
+
+    // 角色列表，不映射到数据库字段
+    @TableField(exist = false)
+    private List<Role> roles;
+
+    // 角色ID列表，用于接收前端数据，不映射到数据库字段
+    @TableField(exist = false)
+    private List<Integer> roleIds;
 }

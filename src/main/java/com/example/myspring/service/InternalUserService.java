@@ -14,4 +14,6 @@ public interface InternalUserService  {
 
     // 根据用户名查询用户
     InternalUser getByUsername(String username);
+
+    InternalUser getById(Integer id);
 }

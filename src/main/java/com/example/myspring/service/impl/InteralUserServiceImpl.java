@@ -2,20 +2,21 @@ package com.example.myspring.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.myspring.entity.InternalUser;
+import com.example.myspring.entity.Role;
 import com.example.myspring.mapper.InternalUserMapper;
+import com.example.myspring.mapper.RoleMapper;
 import com.example.myspring.service.InternalUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class InteralUserServiceImpl implements InternalUserService {
     @Autowired
     private InternalUserMapper internalUserMapper;
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Override
     public List<InternalUser> getAll() {
@@ -39,6 +40,23 @@ public class InteralUserServiceImpl implements InternalUserService {
     public InternalUser getByUsername(String username) {
         System.out.println("查询的用户名：" + username);
         return internalUserMapper.selectByUsername(username);
+    }
+
+    @Override
+    public InternalUser getById(Integer id) {
+//        通过过来的id 查询用户信息
+        InternalUser internalUser = internalUserMapper.selectById(id);
+        if (internalUser != null) {
+            List<Role> roleIds = roleMapper.findRolesByUserId(internalUser.getId());
+//          便利 roleIds 取出角色id 放入 internalUser.roleIds 中，这里需要和 nestjs 端对应
+            List<Integer> Ids = new ArrayList<>();
+            for (Role role : roleIds) {
+                Ids.add(role.getId());
+                internalUser.setRoleIds(Ids);
+            }
+            return internalUser;
+        }
+        return null;
     }
 
 

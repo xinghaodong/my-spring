@@ -33,4 +33,16 @@ public class InternalUserController {
         String password = request.get("password");
         return ResponseDto.success(internalUserService.login(username, password));
     }
+
+    /**
+     * 获取员工信息接口
+     * get 请求
+     * @param id
+     * return 员工信息
+     */
+
+    @GetMapping("internalusers/detail")
+    public ResponseDto<InternalUser> getUserDetail(@RequestParam Integer id) {
+        return ResponseDto.success(internalUserService.getById(id));
+    }
 }
