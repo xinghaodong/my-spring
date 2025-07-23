@@ -16,6 +16,7 @@ import java.util.Map;
 public class InteralUserServiceImpl implements InternalUserService {
     @Autowired
     private InternalUserMapper internalUserMapper;
+
     @Override
     public List<InternalUser> getAll() {
         return internalUserMapper.selectList(null);
@@ -30,4 +31,36 @@ public class InteralUserServiceImpl implements InternalUserService {
         result.put("total", userPage.getTotal());
         return result;
     }
+
+    /**
+     * 根据用户名查询用户信息
+     */
+    @Override
+    public InternalUser getByUsername(String username) {
+        System.out.println("查询的用户名：" + username);
+        return internalUserMapper.selectByUsername(username);
+    }
+
+
+    /**
+     * 登录
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    @Override
+    public Map<String, Object> login(String username, String password) {
+        InternalUser internalUser = getByUsername(username);
+        Map<String, Object> result = new HashMap<>();
+        result.put("informationObject", internalUser);
+//        这里先暂时写死后续在搞jtw 双token
+        result.put("token","123455");
+        return result;
+//        更具用户名查询用户
+//        这里需要把 internalUser  对象都包装在一个对象里informationObject里
+//        InternalUser internalUser = getByUsername(username);
+//        return internalUser;
+    }
+
 }

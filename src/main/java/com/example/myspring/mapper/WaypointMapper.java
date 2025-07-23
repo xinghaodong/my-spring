@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Mapper
 public interface WaypointMapper extends BaseMapper<Waypoint> {
-//    自定义查询
+//    自定义查询 ORDER BY id ASC
     @Select("SELECT id, latitude, longitude, height FROM waypoint WHERE route_id = #{cesiumId}")
     List<Waypoint> selectByCesiumId( Integer cesiumId );
 

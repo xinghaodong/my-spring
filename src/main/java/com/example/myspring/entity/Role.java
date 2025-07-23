@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @TableName("role")
@@ -21,9 +22,9 @@ public class Role {
 
 
     @TableField(value = "created_at", fill = FieldFill.INSERT)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @TableField(value = "updated_at", fill = FieldFill.UPDATE)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
 }

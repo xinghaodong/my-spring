@@ -27,4 +27,10 @@
          */
         void deleteCesium(Integer id);
 
+        /**
+         * 创建航线信息
+         * @param cesium
+         * @return
+         */
+        Cesium createCesium(Cesium cesium);
     }

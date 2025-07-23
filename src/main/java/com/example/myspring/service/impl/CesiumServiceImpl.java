@@ -22,6 +22,7 @@ public class CesiumServiceImpl implements CesiumService {
     @Autowired
     private WaypointMapper waypointMapper;
 
+
     @Override
     public List<Cesium> getAll() {
         return cesiumMapper.selectList(null);
@@ -34,6 +35,7 @@ public class CesiumServiceImpl implements CesiumService {
      * @return
      */
     @Override
+    @Transactional
     public Cesium getById(Integer id) {
 //       先查询 Cesium 数据
         Cesium cesium = cesiumMapper.selectById(id);
@@ -43,7 +45,7 @@ public class CesiumServiceImpl implements CesiumService {
 //      再查询 Waypoint 子表数据
         System.out.println("查询到的数据：" + cesium);
         List<Waypoint> waypoints = waypointMapper.selectByCesiumId(id);
-        cesium.setTempWaypoints(new HashSet<>(waypoints));
+        cesium.setTempWaypoints(waypoints);
         return cesium;
     }
 
@@ -56,8 +58,6 @@ public class CesiumServiceImpl implements CesiumService {
      */
     @Override
     public Map<String, Object> getCesiumPage(int page, int pageSize) {
-        System.out.println("page: " + page);
-        System.out.println("pageSize: " + pageSize);
         Page<Cesium> cesiumPage = new Page<>(page, pageSize);
         cesiumMapper.selectPage(cesiumPage, null);
         Map<String,Object> result = new HashMap<>();
@@ -66,10 +66,15 @@ public class CesiumServiceImpl implements CesiumService {
         return result;
     }
 
+
+    /**
+     * 更新航线
+     * @param cesium
+     * @return
+     */
     @Override
     @Transactional
     public Cesium updateCesium(Cesium cesium) {
-        System.out.println("updateCesium: " + cesium);
         Integer cesiumId = cesium.getId();
         // 先查是否存在
         Cesium existing = cesiumMapper.selectById(cesium.getId());
@@ -94,7 +99,13 @@ public class CesiumServiceImpl implements CesiumService {
         return cesium;
     }
 
+
+    /**
+     * 删除航线
+     * @param id
+     */
     @Override
+    @Transactional
     public void deleteCesium(Integer id) {
         Cesium existing = cesiumMapper.selectById(id);
         if (existing != null) {
@@ -103,5 +114,28 @@ public class CesiumServiceImpl implements CesiumService {
             // 删除主数据
             cesiumMapper.deleteById(id);
         }
+    }
+
+    /**
+     * 创建航线
+     * @param cesium
+     * @return
+     */
+    @Override
+    @Transactional
+    public Cesium createCesium(Cesium cesium) {
+        System.out.println("createCesium: " + cesium);
+        // 手动设置创建时间
+        cesium.setCreatedAt(LocalDateTime.now());
+        cesiumMapper.insert(cesium);
+        // 再把子表的数据插入
+        if (cesium.getTempWaypoints() != null && !cesium.getTempWaypoints().isEmpty()) {
+            List<Waypoint> waypoints = new ArrayList<>(cesium.getTempWaypoints());
+            for (Waypoint waypoint : waypoints) {
+                waypoint.setRouteId(cesium.getId());
+                waypointMapper.insert(waypoint);
+            }
+        }
+        return cesium;
     }
 }

@@ -61,5 +61,16 @@ public class CesiumController {
         return ResponseDto.success("删除成功",null);
     }
 
+    /**
+     * 新增航线
+     * @param cesium
+     * @return
+     */
+
+    @PostMapping("/create")
+    public ResponseDto<Cesium> createCesium(@RequestBody Cesium cesium) {
+        return ResponseDto.success(cesiumService.createCesium(cesium));
+    }
+
 
 }
