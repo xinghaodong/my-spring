@@ -3,6 +3,7 @@ package com.example.myspring.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.myspring.entity.InternalUser;
 import com.example.myspring.entity.Role;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -16,8 +17,15 @@ public interface InternalUserMapper extends BaseMapper<InternalUser> {
 
     List<Role> selectRolesByUserId(Integer id);
 
-    //    或者直接用 排除 password
-//    QueryWrapper<InternalUser> wrapper = new QueryWrapper<>();
-//    wrapper.eq("username",username).select("id","username","email","theme",“theme","created_at","updated_at"); // 排除 password
-//    InternalUser user = internalUserMapper.selectOne(wrapper);
+   // 给用户添加角色 中间关联表 internal_user_roles_role
+    @Insert("INSERT INTO internal_user_roles_role (internalUserId, roleId) VALUES (#{internalUserId}, #{roleId})")
+    void addRole(@Param("internalUserId") Integer internalUserId, @Param("roleId") Integer roleId);
+
+    /***
+     * 删除用户角色
+     * @param userId
+     */
+    @Select("DELETE FROM internal_user_roles_role WHERE internalUserId = #{userId}")
+    void deleteRolesByUserId(@Param("userId") Integer userId);
+
 }

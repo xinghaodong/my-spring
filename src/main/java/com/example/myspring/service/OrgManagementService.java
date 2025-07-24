@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface OrgManagementService {
     List<OrgManagement> getAll();
+
+    OrgManagement add(OrgManagement orgManagement);
+
+    void delete(Integer id);
 }

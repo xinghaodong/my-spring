@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,4 +27,5 @@ public class ResponseDto<T> {
     public static ResponseDto<Cesium> error(int code, String message) {
         return new ResponseDto<>(code, message, null);
     }
+
 }

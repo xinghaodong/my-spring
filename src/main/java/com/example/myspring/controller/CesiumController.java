@@ -55,8 +55,9 @@ public class CesiumController {
      * @return
      */
     @PostMapping("/delete")
-    public ResponseDto<String> deleteCesium(@RequestBody Map<String, Integer> request) {
-        Integer id = request.get("id");
+    public ResponseDto<Void> deleteCesium(@RequestBody Map<String,Integer> obj) {
+        System.out.println(obj);
+        Integer id = obj.get("id");
         cesiumService.deleteCesium(id);
         return ResponseDto.success("删除成功",null);
     }

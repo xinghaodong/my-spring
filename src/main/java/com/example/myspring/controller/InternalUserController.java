@@ -1,5 +1,6 @@
 package com.example.myspring.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.myspring.config.ResponseDto;
 import com.example.myspring.entity.InternalUser;
 import com.example.myspring.service.InternalUserService;
@@ -29,8 +30,9 @@ public class InternalUserController {
      */
     @PostMapping("/auth/login")
     public ResponseDto<Map<String, Object>> login(@RequestBody Map<String, String> request) {
-        String username = request.get("username");
-        String password = request.get("password");
+        System.out.println(request);
+        String username = request.get("username").trim();
+        String password = request.get("password").trim();
         return ResponseDto.success(internalUserService.login(username, password));
     }
 
@@ -44,5 +46,26 @@ public class InternalUserController {
     @GetMapping("internalusers/detail")
     public ResponseDto<InternalUser> getUserDetail(@RequestParam Integer id) {
         return ResponseDto.success(internalUserService.getById(id));
+    }
+
+    /**
+     * 新增员工
+     * post 请求
+     * return 新增员工信息
+     */
+    @PostMapping("internalusers/add")
+    public ResponseDto<InternalUser> addUser(@RequestBody InternalUser internalUser) {
+        System.out.println(internalUser);
+        return ResponseDto.success(internalUserService.add(internalUser));
+    }
+
+    /**
+     * 修改员工信息接口
+     * post 请求
+     */
+    @PostMapping("internalusers/update")
+    public ResponseDto<InternalUser> updateUser(@RequestBody InternalUser internalUser) {
+        System.out.println(internalUser);
+        return ResponseDto.success(internalUserService.updateUser(internalUser));
     }
 }

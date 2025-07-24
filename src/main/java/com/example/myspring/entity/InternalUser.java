@@ -60,4 +60,12 @@ public class InternalUser {
     // 角色ID列表，用于接收前端数据，不映射到数据库字段
     @TableField(exist = false)
     private List<Integer> roleIds;
+
+//    关联组织表 ，用于接收前端数据，一对一
+//    @TableField(exist = false)
+//    private OrgManagement orgManagement;
+
+   // 关联组织表，字段 organid
+    @TableField(value = "organid")
+    private Integer organid;
 }

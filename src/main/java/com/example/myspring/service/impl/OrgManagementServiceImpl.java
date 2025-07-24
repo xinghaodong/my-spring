@@ -27,6 +27,24 @@ public class OrgManagementServiceImpl implements OrgManagementService {
         return buildTree(orgManagements);
     }
 
+    @Override
+    public OrgManagement add(OrgManagement orgManagement) {
+        orgManagementMapper.insert(orgManagement);
+        return orgManagement;
+    }
+
+    /**
+     * 删除
+     * @param id
+     */
+    @Override
+    public void delete(Integer id) {
+//        先查询前端传入的id 的菜单
+        OrgManagement orgManagement = orgManagementMapper.selectById(id);
+        if (orgManagement != null) {
+            orgManagementMapper.deleteById(id);
+        }
+    }
 
     private List<OrgManagement> buildTree(List<OrgManagement> orgManagements) {
         // 1. 创建一个 Map，用于快速通过 id 查找菜单

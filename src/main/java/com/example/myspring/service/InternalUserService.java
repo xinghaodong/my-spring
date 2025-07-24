@@ -10,10 +10,14 @@ public interface InternalUserService  {
     // 分页方法
     Map<String, Object> getUserPage(int page, int pageSize);
 
+    InternalUser add(InternalUser internalUser);
+
     Map<String,Object> login(String username, String password);
 
     // 根据用户名查询用户
     InternalUser getByUsername(String username);
 
     InternalUser getById(Integer id);
+
+    InternalUser updateUser(InternalUser internalUser);
 }
