@@ -71,10 +71,4 @@ public class OrgManagementServiceImpl implements OrgManagementService {
         });
         return tree;
     }
-
-
-//    @Override
-//    public List<Role> getAll() {
-//        return roleMapper.selectList(null);
-//    }
 }

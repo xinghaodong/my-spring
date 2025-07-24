@@ -20,4 +20,6 @@ public interface InternalUserService  {
     InternalUser getById(Integer id);
 
     InternalUser updateUser(InternalUser internalUser);
+
+    void deleteUser(Integer id);
 }

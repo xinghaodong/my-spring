@@ -44,6 +44,7 @@ public class Menu {
 
     private String isscreen;
 
+
     // 子菜单列表，非数据库字段
     @TableField(exist = false)
     private List<Menu> children;

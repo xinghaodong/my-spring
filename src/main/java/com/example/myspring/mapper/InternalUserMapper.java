@@ -3,10 +3,7 @@ package com.example.myspring.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.myspring.entity.InternalUser;
 import com.example.myspring.entity.Role;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -25,7 +22,7 @@ public interface InternalUserMapper extends BaseMapper<InternalUser> {
      * 删除用户角色
      * @param userId
      */
-    @Select("DELETE FROM internal_user_roles_role WHERE internalUserId = #{userId}")
+    @Delete("DELETE FROM internal_user_roles_role WHERE internalUserId = #{userId}")
     void deleteRolesByUserId(@Param("userId") Integer userId);
 
 }

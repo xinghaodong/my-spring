@@ -8,4 +8,6 @@ public interface MenuService {
     List<Menu> getAll();
 
     Void deleteMenu(Integer id);
+
+    Menu getById(Integer id);
 }

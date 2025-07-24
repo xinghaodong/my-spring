@@ -46,6 +46,21 @@ public class MenuServiceImpl implements MenuService {
         return null;
     }
 
+
+    /**
+     * 详情
+     * @param id
+     * @return
+     */
+    @Override
+    public Menu getById(Integer id) {
+//       判断 id 是否能找到
+        if (menuMapper.selectById(id) == null) {
+            return null;
+        }
+        return menuMapper.selectById(id);
+    }
+
     private List<Menu> buildTree(List<Menu> menus) {
         // 1. 创建一个 Map，用于快速通过 id 查找菜单
         Map<Integer, Menu> menuMap = new HashMap<>();

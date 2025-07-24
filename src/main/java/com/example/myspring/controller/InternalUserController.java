@@ -68,4 +68,17 @@ public class InternalUserController {
         System.out.println(internalUser);
         return ResponseDto.success(internalUserService.updateUser(internalUser));
     }
+
+    /**
+     * 删除员工接口
+     * post 请求
+     */
+
+    @PostMapping("internalusers/delete")
+    public ResponseDto<Void> deleteUser(@RequestBody Map<String, Integer> id) {
+        System.out.println(id);
+        internalUserService.deleteUser(id.get("id"));
+        return ResponseDto.success("删除成功",null);
+
+    }
 }

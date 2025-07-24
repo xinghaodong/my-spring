@@ -5,6 +5,7 @@ import com.example.myspring.mapper.RoleMapper;
 import com.example.myspring.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDateTime;
@@ -32,10 +33,10 @@ public class RoleSerivceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public Role updateRole(Role role) {
-// 先根据传入的id查询出数据库中对应的数据
+        // 先根据传入的id查询出数据库中对应的数据
         Role existing = roleMapper.selectById(role.getId());
-        System.out.println( "查询到的数据：" + existing );
         if (existing == null) {
             return null;
         }

@@ -45,6 +45,7 @@ public class InteralUserServiceImpl implements InternalUserService {
     }
 
     @Override
+    @Transactional
     public InternalUser getById(Integer id) {
 //        通过过来的id 查询用户信息
         InternalUser internalUser = internalUserMapper.selectById(id);
@@ -68,18 +69,44 @@ public class InteralUserServiceImpl implements InternalUserService {
      * @return
      */
     @Override
+    @Transactional
     public InternalUser updateUser(InternalUser internalUser) {
-        System.out.println("修改的用户信息：" + internalUser);
-//       先获取是否存在
+        // 先获取是否存在
         InternalUser oldUser = internalUserMapper.selectById(internalUser.getId());
-        System.out.println("修改前的用户信息：" + oldUser);
-        internalUserMapper.updateById(internalUser);
-//        再获取 用户关联的角色
-        List<Role> roles = roleMapper.findRolesByUserId(internalUser.getId());
-        for( Role role : roles ){
+        if (oldUser == null) {
+            return null;
+        }
+        // 再获取之前的用户关联的角色
+        List<Role> oldRoleIds = roleMapper.findRolesByUserId(oldUser.getId());
+        // 删除掉旧的关联角色
+        // 判断如果之前不存在关联就不需要调用删除了
+        if (oldRoleIds != null && !oldRoleIds.isEmpty()) {
             internalUserMapper.deleteRolesByUserId(internalUser.getId());
         }
-        return  internalUser;
+        // 再获取传来的用户关联的角色
+        List<Integer> newRoleIds = internalUser.getRoleIds();
+        for (Integer roleId : newRoleIds) {
+        // 设置新的关联角色
+            internalUserMapper.addRole(internalUser.getId(), roleId);
+        }
+        // 最后更新用户自身信息
+        internalUserMapper.updateById(internalUser);
+        return internalUser;
+    }
+
+    /**
+     * 删除用户
+     * @param id
+     */
+    @Override
+    public void deleteUser(Integer id) {
+     InternalUser internalUser =  internalUserMapper.selectById(id);
+     if (internalUser != null && internalUser.getId() != 1){
+//         先删除用户关联的角色 这里由于数据库是级联删除，所以这里不用写
+//         internalUserMapper.deleteRolesByUserId( id);
+//         再删除用户自身
+         internalUserMapper.deleteById(id);
+     }
     }
 
 
@@ -90,7 +117,7 @@ public class InteralUserServiceImpl implements InternalUserService {
      * @return
      */
     @Override
-//    @Transactional
+    @Transactional
     public InternalUser add(InternalUser internalUser) {
         System.out.println("添加的用户信息：" + internalUser);
         // 先取roleIds数组集合
@@ -110,7 +137,6 @@ public class InteralUserServiceImpl implements InternalUserService {
                 internalUserMapper.addRole(internalUser.getId(), roleId);
             }
         }
-
         return internalUser;
     }
 

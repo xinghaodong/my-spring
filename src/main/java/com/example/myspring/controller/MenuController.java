@@ -6,6 +6,7 @@ import com.example.myspring.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,5 +29,15 @@ public class MenuController {
         Integer id = obj.get("id");
         menuService.deleteMenu(id);
         return ResponseDto.success("删除成功", null);
+    }
+
+    /**
+     * 详情
+     * @param id
+     */
+    @RequestMapping("/detail")
+    public ResponseDto<Menu> getById(@RequestParam Integer id) {
+        Menu menu = menuService.getById(id);
+        return ResponseDto.success(menu);
     }
 }
