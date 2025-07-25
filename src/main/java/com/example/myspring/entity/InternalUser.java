@@ -68,4 +68,13 @@ public class InternalUser {
    // 关联组织表，字段 organid
     @TableField(value = "organid")
     private Integer organid;
+
+    //   给前端返回一个对象 不存表 avatar
+    @TableField(exist = false)
+    private Object avatar;
+
+    // 添加外检字段 关联附件 表
+    @TableField("avatar_id")
+    private Integer avatarId;
+
 }

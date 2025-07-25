@@ -3,6 +3,9 @@ package com.example.myspring.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.myspring.entity.InternalUser;
 import com.example.myspring.entity.Role;
+import com.example.myspring.fileList.entity.FileListEntity;
+import com.example.myspring.fileList.mapper.FileListMapper;
+import com.example.myspring.fileList.service.FileListService;
 import com.example.myspring.mapper.InternalUserMapper;
 import com.example.myspring.mapper.RoleMapper;
 import com.example.myspring.service.InternalUserService;
@@ -19,6 +22,11 @@ public class InteralUserServiceImpl implements InternalUserService {
     private InternalUserMapper internalUserMapper;
     @Autowired
     private RoleMapper roleMapper;
+//    注入附件表
+    @Autowired
+    private FileListMapper fileListMapper;
+    @Autowired
+    private FileListService fileListService;
 
     @Override
     public List<InternalUser> getAll() {
@@ -30,6 +38,19 @@ public class InteralUserServiceImpl implements InternalUserService {
         Page<InternalUser> userPage = new Page<>(page, pageSize);
         internalUserMapper.selectPage(userPage, null); // 无条件分页
         Map<String, Object> result = new HashMap<>();
+        // 便利 result 根据用户id 查询对应的附件表
+        for (InternalUser user : userPage.getRecords()) {
+//            List<Role> roleIds = roleMapper.findRolesByUserId(user.getId());
+//            List<FileListEntity> fileList = fileListMapper.selectByUserId(user.getId());
+//            System.out.println("用户附件：" + fileList);
+//            调用附件的服务更具id 查询用户附件
+//            Map<String, Object> fileList = (Map<String, Object>) fileListService.queryById(user.getId())
+            System.out.println("用户附件：" + user);
+//            这里以直接调用 FileListServiceImpl，但 不推荐。
+//            使用接口（FileListService）而不是实现类，是为了 解耦、可维护、可扩展、易测试。
+            FileListEntity fileList = fileListService.queryById(user.getAvatarId());
+            user.setAvatar(fileList);
+        }
         result.put("data", userPage.getRecords());
         result.put("total", userPage.getTotal());
         return result;
