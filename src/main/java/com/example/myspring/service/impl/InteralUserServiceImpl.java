@@ -147,9 +147,16 @@ public class InteralUserServiceImpl implements InternalUserService {
         internalUser.setCreatedAt(LocalDateTime.now());
 //        暂时先设置一个密码
         internalUser.setPassword("888888");
+        //        判断是否传了头像
+        System.out.println("用户头像：" + internalUser.getAvatar());
+
+
         // 先插入用户，让数据库生成自增ID
         internalUserMapper.insert(internalUser);
         System.out.println("插入后的用户ID：" + internalUser.getId());
+
+
+
         // 然后使用生成的ID添加角色关联
         if (roleIds != null && !roleIds.isEmpty()) {
             for (Integer roleId : roleIds) {
