@@ -9,9 +9,12 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+  web:
+    resources:
+      static-locations: classpath:/static/,file:./src/main/resources/static/
 
 
 mybatis-plus:
    configuration:
      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#     mapUnderscoreToCamelCase: true 映射成驼峰
+     mapUnderscoreToCamelCase: true

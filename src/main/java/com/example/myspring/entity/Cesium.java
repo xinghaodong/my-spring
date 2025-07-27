@@ -80,4 +80,6 @@ public class Cesium {
      */
     @TableField(exist = false) // 表示这不是数据库字段
     private List<Waypoint> tempWaypoints;
+
+
 }

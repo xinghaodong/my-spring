@@ -53,4 +53,12 @@ public class Menu {
     @TableField(exist = false)
     private Menu parent;
 
+//    关联的角色list,非数据库字段
+    @TableField(exist = false)
+    private List<Role> roles;
+
+    // 关联的角色 返回给前端 Integer数组 roleIds
+    @TableField(exist = false)
+    private List<Integer> roleIds;
+
 }

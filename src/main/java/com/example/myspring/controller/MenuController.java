@@ -4,10 +4,7 @@ import com.example.myspring.config.ResponseDto;
 import com.example.myspring.entity.Menu;
 import com.example.myspring.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -40,4 +37,31 @@ public class MenuController {
         Menu menu = menuService.getById(id);
         return ResponseDto.success(menu);
     }
+
+    /**
+     * 新增
+     * @param menu
+     * post
+     */
+
+    @PostMapping("/addmenu")
+    public ResponseDto<Menu> addMenu(@RequestBody Menu menu) {
+        System.out.println(menu);
+
+        Menu menu1 = menuService.addMenu(menu);
+        return ResponseDto.success("添加成功", menu1);
+    }
+
+    /**
+     * 修改
+     * @param menu
+     * post
+     */
+
+    @PostMapping("/update")
+    public ResponseDto<Menu> updateMenu(@RequestBody Menu menu) {
+        Menu menu1 = menuService.updateMenu(menu);
+        return ResponseDto.success("修改成功", menu1);
+    }
+
 }

@@ -7,6 +7,7 @@ import com.example.myspring.service.InternalUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +65,7 @@ public class InternalUserController {
      * post 请求
      */
     @PostMapping("internalusers/update")
-    public ResponseDto<InternalUser> updateUser(@RequestBody InternalUser internalUser) {
+    public ResponseDto<InternalUser> updateUser(@RequestBody InternalUser internalUser) throws IOException {
         System.out.println(internalUser);
         return ResponseDto.success(internalUserService.updateUser(internalUser));
     }

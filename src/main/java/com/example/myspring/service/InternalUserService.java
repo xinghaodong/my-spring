@@ -1,6 +1,8 @@
 package com.example.myspring.service;
 
 import com.example.myspring.entity.InternalUser;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public interface InternalUserService  {
 
     InternalUser getById(Integer id);
 
-    InternalUser updateUser(InternalUser internalUser);
+    InternalUser updateUser(InternalUser internalUser) throws IOException;
 
     void deleteUser(Integer id);
 }

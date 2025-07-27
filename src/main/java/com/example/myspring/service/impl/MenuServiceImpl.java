@@ -2,6 +2,7 @@ package com.example.myspring.service.impl;
 
 
 import com.example.myspring.entity.Menu;
+import com.example.myspring.entity.Role;
 import com.example.myspring.mapper.MenuMapper;
 import com.example.myspring.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,15 @@ public class MenuServiceImpl implements MenuService {
       List<Menu> menus = menuMapper.selectList(null);
 //        实现一个树形方法 返回
         return buildTree(menus);
+    }
+
+    /**
+     * 查询全部菜单啊
+     * @return list菜单
+     */
+    @Override
+    public List<Menu> getAllList() {
+        return menuMapper.selectList(null);
     }
 
     @Override
@@ -58,7 +68,65 @@ public class MenuServiceImpl implements MenuService {
         if (menuMapper.selectById(id) == null) {
             return null;
         }
-        return menuMapper.selectById(id);
+        Menu menu = menuMapper.selectById(id);
+//        关联查询中间表 menu_roles_role 资源对应的角色
+        List<Role> roleList = menuMapper.queryRoleIdsByMenuId(id);
+        System.out.println( "查询到的数据：" + roleList );
+        // 提取角色ID列表
+        List<Integer> roleIds = new ArrayList<>();
+        for (Role role : roleList) {
+            roleIds.add(role.getId());
+        }
+        menu.setRoleIds(roleIds);
+
+        System.out.println( "查询到的数据：" + menu );
+        return menu;
+    }
+
+    /**
+     * 新增
+     * @param menu
+     * @return
+     */
+    @Override
+    public Menu addMenu(Menu menu) {
+        menuMapper.insert(menu);
+        return menu;
+    }
+
+    /**
+     * 修改
+     * @param menu
+     * @return
+     */
+    @Override
+    public Menu updateMenu(Menu menu) {
+//        首选gen
+        int id = menu.getId();
+        System.out.println(id);
+        if( id == 0){
+            return null;
+        }
+        Menu menu1 = menuMapper.selectById(id);
+//        判断 menu1 存在
+        if(menu1 == null){
+            return null;
+        }
+        menuMapper.updateById(menu);
+
+//        删除关联的角色
+        menuMapper.deleteRolesByMenuId(id);
+
+            System.out.println("删除成功");
+//            添加关联的角色
+//        定义一个数字数组
+        List<Integer> roleIds = menu.getRoleIds();
+        for (Integer role : menu.getRoleIds()) {
+            System.out.println("添加的菜单ID：" + id);
+            System.out.println("添加的角色ID：" + role);
+            menuMapper.addMenusRole(id, role);
+        }
+        return menu;
     }
 
     private List<Menu> buildTree(List<Menu> menus) {
