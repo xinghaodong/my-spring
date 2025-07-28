@@ -33,4 +33,6 @@ public interface MenuMapper extends BaseMapper<Menu> {
     @Select("SELECT * FROM menu WHERE id IN (SELECT menuId FROM role_menus_menu WHERE roleId = #{roleId})")
     List<Menu> findMenusByRoleId(@Param("roleId") Integer roleId);
 
+    @Select("SELECT * FROM menu WHERE code = #{code}")
+    Menu selectByCode(String code);
 }

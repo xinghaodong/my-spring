@@ -1,11 +1,10 @@
 package com.example.myspring.service.impl;
 
-import com.example.myspring.entity.Menu;
+import com.example.myspring.entity.InternalUser;
 import com.example.myspring.entity.OrgManagement;
-import com.example.myspring.entity.Role;
+import com.example.myspring.mapper.InternalUserMapper;
 import com.example.myspring.mapper.OrgManagementMapper;
 import com.example.myspring.service.OrgManagementService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,8 +15,14 @@ import java.util.Map;
 @Service
 public class OrgManagementServiceImpl implements OrgManagementService {
 
-    @Autowired
-    private OrgManagementMapper orgManagementMapper;
+    private final OrgManagementMapper orgManagementMapper;
+
+    private final InternalUserMapper internalUserMapper;
+
+    public OrgManagementServiceImpl(OrgManagementMapper orgManagementMapper, InternalUserMapper internalUserMapper) {
+        this.orgManagementMapper = orgManagementMapper;
+        this.internalUserMapper = internalUserMapper;
+    }
 
     @Override
     public List<OrgManagement> getAll() {
@@ -27,15 +32,26 @@ public class OrgManagementServiceImpl implements OrgManagementService {
         return buildTree(orgManagements);
     }
 
+    /**
+     * 新增
+     * @param orgManagement orgManagement
+     * @return orgManagement
+     */
     @Override
     public OrgManagement add(OrgManagement orgManagement) {
+//        从里边取出组织id 从数据库里查询出是否有相同的 orgcode 如果相同就不能添加
+        OrgManagement orgManagement1 = orgManagementMapper.selectByOrgcode(orgManagement.getOrgcode());
+        System.out.println(orgManagement1);
+        if(orgManagement1 != null){
+            throw new IllegalArgumentException("组织编码已存在，无法重复添加");
+        }
         orgManagementMapper.insert(orgManagement);
         return orgManagement;
     }
 
     /**
      * 删除
-     * @param id
+     * @param id id
      */
     @Override
     public void delete(Integer id) {
@@ -44,6 +60,23 @@ public class OrgManagementServiceImpl implements OrgManagementService {
         if (orgManagement != null) {
             orgManagementMapper.deleteById(id);
         }
+    }
+
+    /**
+     * 详情
+     * @param id id
+     * @return orgManagement
+     */
+    @Override
+    public OrgManagement detail(Integer id) {
+        if (id == null) {
+            return null;
+        }
+//      根据id 查询关联的所有用户
+        List<InternalUser> internalUsers = internalUserMapper.getUsersByOrganid(id);
+        OrgManagement orgManagement = orgManagementMapper.selectById(id);
+        orgManagement.setEmployees(internalUsers);
+        return orgManagement;
     }
 
     private List<OrgManagement> buildTree(List<OrgManagement> orgManagements) {

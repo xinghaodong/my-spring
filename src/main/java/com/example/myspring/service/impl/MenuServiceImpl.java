@@ -5,7 +5,6 @@ import com.example.myspring.entity.Menu;
 import com.example.myspring.entity.Role;
 import com.example.myspring.mapper.MenuMapper;
 import com.example.myspring.service.MenuService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,11 +13,15 @@ import java.util.*;
 
 @Service
 public class MenuServiceImpl implements MenuService {
-    @Autowired
-    private MenuMapper menuMapper;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate; // 注入 JdbcTemplate
+    private final MenuMapper menuMapper;
+
+    private final JdbcTemplate jdbcTemplate; // 注入 JdbcTemplate
+
+    public MenuServiceImpl(MenuMapper menuMapper, JdbcTemplate jdbcTemplate) {
+        this.menuMapper = menuMapper;
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public List<Menu> getAll() {
@@ -38,11 +41,11 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional
-    public Void deleteMenu(Integer id) {
+    public void deleteMenu(Integer id) {
 //        巡查是否存在
         Menu menu = menuMapper.selectById(id);
         if (menu == null) {
-            return null;
+            return;
         }
         // 先删除中间表的关联数据
         // 方式1：使用 JdbcTemplate
@@ -53,14 +56,13 @@ public class MenuServiceImpl implements MenuService {
         //        int deleteByMenuId(@Param("menuId") Integer menuId);
         //        注入 roleMenuMapper 直接调用  roleMenuMapper.deleteByMenuId(id);
         menuMapper.deleteById(id);
-        return null;
     }
 
 
     /**
      * 详情
-     * @param id
-     * @return
+     * @param id id
+     * @return menu
      */
     @Override
     public Menu getById(Integer id) {
@@ -85,19 +87,24 @@ public class MenuServiceImpl implements MenuService {
 
     /**
      * 新增
-     * @param menu
-     * @return
+     * @param menu menu
+     * @return  menu
      */
     @Override
     public Menu addMenu(Menu menu) {
+//        查询菜单编码是否存在
+        Menu menu1 = menuMapper.selectByCode(menu.getCode());
+        if(menu1 != null){
+            throw new IllegalArgumentException("菜单编码已存在");
+        }
         menuMapper.insert(menu);
         return menu;
     }
 
     /**
      * 修改
-     * @param menu
-     * @return
+     * @param menu menu
+     * @return  menu
      */
     @Override
     public Menu updateMenu(Menu menu) {
@@ -120,10 +127,8 @@ public class MenuServiceImpl implements MenuService {
             System.out.println("删除成功");
 //            添加关联的角色
 //        定义一个数字数组
-        List<Integer> roleIds = menu.getRoleIds();
+//        List<Integer> roleIds = menu.getRoleIds();
         for (Integer role : menu.getRoleIds()) {
-            System.out.println("添加的菜单ID：" + id);
-            System.out.println("添加的角色ID：" + role);
             menuMapper.addMenusRole(id, role);
         }
         return menu;

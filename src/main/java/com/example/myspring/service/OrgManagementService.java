@@ -10,4 +10,6 @@ public interface OrgManagementService {
     OrgManagement add(OrgManagement orgManagement);
 
     void delete(Integer id);
+
+    OrgManagement detail(Integer id);
 }

@@ -2,7 +2,6 @@ package com.example.myspring.controller;
 
 
 import com.example.myspring.config.ResponseDto;
-import com.example.myspring.entity.Menu;
 import com.example.myspring.entity.Role;
 import com.example.myspring.mapper.MenuMapper;
 import com.example.myspring.service.MenuService;
@@ -29,7 +28,7 @@ public class RoleController {
 
     /**
      * 查询所有角色
-     * @return
+     * @return 角色列表
      */
     @GetMapping("/findAll")
     public ResponseDto<List<Role>> getAll() {
@@ -37,9 +36,20 @@ public class RoleController {
     }
 
     /**
+     * 新增角色
+     * @param role role
+     * @return 角色
+     */
+
+    @PostMapping("/create")
+    public ResponseDto<Role> addRole(@RequestBody Role role) {
+        return ResponseDto.success(roleService.addRole(role));
+    }
+
+    /**
      * 根据用户id查询角色
-     * @param id
-     * @return
+     * @param id id
+     * @return 角色
      */
     @GetMapping("/detail")
     public ResponseDto<Role> getRoleByUserId(Integer id) {
@@ -48,8 +58,8 @@ public class RoleController {
 
     /**
      * 修改角色
-     * @param role
-     * @return
+     * @param role role
+     * @return 角色
      */
     @PostMapping("/update")
     public ResponseDto<Role> updateRole(@RequestBody Role role) {
@@ -58,7 +68,7 @@ public class RoleController {
 
     /***
      * 获取角色菜单
-     * @param id
+     * @param id id
      * @return 角色的菜单列表
      */
     @GetMapping("/getRoleMenus")
@@ -71,7 +81,7 @@ public class RoleController {
     /**
      * 修改角色菜单资源
      * post 请求
-     * @param obj
+     * @param obj obj
      * @return
      * 待完善
      */

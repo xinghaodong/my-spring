@@ -1,6 +1,5 @@
 package com.example.myspring.service;
 
-import com.example.myspring.entity.Menu;
 import com.example.myspring.entity.Role;
 
 import java.util.List;
@@ -16,4 +15,6 @@ public interface RoleService {
     List<Integer> getRoleMenus(Integer id);
 
     Role updateRoleMenus(Map<String, Object> obj);
+
+    Role addRole(Role role);
 }

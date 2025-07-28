@@ -1,21 +1,22 @@
 package com.example.myspring.controller;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.myspring.config.ResponseDto;
 import com.example.myspring.entity.InternalUser;
 import com.example.myspring.service.InternalUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("api")
 public class InternalUserController {
-    @Autowired
-    private InternalUserService internalUserService;
+
+    private final InternalUserService internalUserService;
+
+    public InternalUserController(InternalUserService internalUserService) {
+        this.internalUserService = internalUserService;
+    }
 
     // 新增：分页查询接口
     @GetMapping("/internalusers/find")

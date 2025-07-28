@@ -31,8 +31,25 @@ public class GlobalExceptionHandler {
 
     //   处理 Exception（兜底处理） 捕获所有未被其他 @ExceptionHandler 处理的异常，避免直接向客户端暴露堆栈信息。
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDto> handleAllExceptions(Exception ex) {
-        ErrorResponseDto error = new ErrorResponseDto(500, "系统内部错误:     " + ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ResponseDto<?>> handleAllExceptions(Exception ex) {
+        ResponseDto<?> error;
+        HttpStatus status;
+
+        if (ex instanceof IllegalArgumentException) {
+            error = ResponseDto.fail(ex.getMessage());  // 直接返回你抛出的友好信息
+            status = HttpStatus.BAD_REQUEST;
+        } else {
+            // 其他未知异常才视为“系统错误”
+            error = ResponseDto.fail("系统内部错误");
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            // 建议打印日志：log.error("系统异常", ex);
+        }
+
+        return new ResponseEntity<>(error, status);
     }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorResponseDto> handleAllExceptions(Exception ex) {
+//        ErrorResponseDto error = new ErrorResponseDto(500, "系统内部错误:     " + ex.getMessage());
+//        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }

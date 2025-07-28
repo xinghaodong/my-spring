@@ -2,13 +2,11 @@ package com.example.myspring.service.impl;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.myspring.config.ResponseDto;
 import com.example.myspring.entity.Cesium;
 import com.example.myspring.entity.Waypoint;
 import com.example.myspring.mapper.CesiumMapper;
 import com.example.myspring.mapper.WaypointMapper;
 import com.example.myspring.service.CesiumService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +15,15 @@ import java.util.*;
 
 @Service
 public class CesiumServiceImpl implements CesiumService {
-    @Autowired
-    private CesiumMapper cesiumMapper;
-    @Autowired
-    private WaypointMapper waypointMapper;
+
+    private final CesiumMapper cesiumMapper;
+
+    private final WaypointMapper waypointMapper;
+
+    public CesiumServiceImpl(CesiumMapper cesiumMapper, WaypointMapper waypointMapper) {
+        this.cesiumMapper = cesiumMapper;
+        this.waypointMapper = waypointMapper;
+    }
 
 
     @Override
@@ -31,8 +34,8 @@ public class CesiumServiceImpl implements CesiumService {
     /**
      *
      * 根据 id 查询航线信息
-     * @param id
-     * @return
+     * @param id id
+     * @return Cesium
      */
     @Override
     @Transactional
@@ -52,9 +55,9 @@ public class CesiumServiceImpl implements CesiumService {
     /**
      *
      * 分页查询 航线列表
-     * @param page
-     * @param pageSize
-     * @return
+     * @param page page
+     * @param pageSize pageSize
+     * @return Map
      */
     @Override
     public Map<String, Object> getCesiumPage(int page, int pageSize) {
@@ -69,13 +72,13 @@ public class CesiumServiceImpl implements CesiumService {
 
     /**
      * 更新航线
-     * @param cesium
-     * @return
+     * @param cesium cesium
+     * @return cesium
      */
     @Override
     @Transactional
     public Cesium updateCesium(Cesium cesium) {
-        Integer cesiumId = cesium.getId();
+//        Integer cesiumId = cesium.getId();
         // 先查是否存在
         Cesium existing = cesiumMapper.selectById(cesium.getId());
         if (existing == null) {
@@ -102,7 +105,7 @@ public class CesiumServiceImpl implements CesiumService {
 
     /**
      * 删除航线
-     * @param id
+     * @param id id
      */
     @Override
     @Transactional
@@ -118,8 +121,8 @@ public class CesiumServiceImpl implements CesiumService {
 
     /**
      * 创建航线
-     * @param cesium
-     * @return
+     * @param cesium cesium
+     * @return cesium
      */
     @Override
     @Transactional

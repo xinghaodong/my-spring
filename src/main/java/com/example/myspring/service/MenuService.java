@@ -10,7 +10,7 @@ public interface MenuService {
 //    全部菜单返回list
     List<Menu> getAllList();
 
-    Void deleteMenu(Integer id);
+    void deleteMenu(Integer id);
 
     Menu getById(Integer id);
 

@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
-import java.util.Set;
 
 @Mapper
 public interface WaypointMapper extends BaseMapper<Waypoint> {
@@ -18,6 +17,6 @@ public interface WaypointMapper extends BaseMapper<Waypoint> {
 
     // 根据航线ID删除所有关联的航点
     @Delete("DELETE FROM waypoint WHERE route_id = #{cesiumId}")
-    int deleteByCesiumId(@Param("cesiumId") Integer cesiumId);
+    void deleteByCesiumId(@Param("cesiumId") Integer cesiumId);
 
 }

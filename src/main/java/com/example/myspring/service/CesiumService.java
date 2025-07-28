@@ -16,21 +16,21 @@
         /**
          * 修改航线信息
          *
-         * @param cesium
+         * @param cesium cesium
          */
         Cesium updateCesium(Cesium cesium) ;
 
         /**
          * 删除航线信息
          *
-         * @param id
+         * @param id id
          */
         void deleteCesium(Integer id);
 
         /**
          * 创建航线信息
-         * @param cesium
-         * @return
+         * @param cesium cesium
+         * @return cesium
          */
         Cesium createCesium(Cesium cesium);
     }

@@ -28,4 +28,8 @@ public class ResponseDto<T> {
         return new ResponseDto<>(code, message, null);
     }
 
+    public static <T> ResponseDto<T> fail(String message) {
+        return new ResponseDto<>(500, message, null);
+    }
+
 }

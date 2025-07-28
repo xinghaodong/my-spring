@@ -30,8 +30,11 @@ public class OrgManagement {
     @TableField(exist = false)
     private List<OrgManagement> children;
 
-//    // 父菜单对象，非数据库字段
-//    @TableField(exist = false)
-//    private OrgManagement parent;
+
+//    关联的用户对象数组，非数据库字段
+    @TableField(exist = false)
+    private List<InternalUser> employees;
+
+
 
 }

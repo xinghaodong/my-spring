@@ -1,7 +1,6 @@
 package com.example.myspring.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.myspring.config.ResponseDto;
 import com.example.myspring.entity.InternalUser;
 import com.example.myspring.entity.Menu;
 import com.example.myspring.entity.Role;
@@ -12,10 +11,8 @@ import com.example.myspring.mapper.InternalUserMapper;
 import com.example.myspring.mapper.MenuMapper;
 import com.example.myspring.mapper.RoleMapper;
 import com.example.myspring.service.InternalUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -23,18 +20,23 @@ import java.util.*;
 
 @Service
 public class InteralUserServiceImpl implements InternalUserService {
-    @Autowired
-    private InternalUserMapper internalUserMapper;
-    @Autowired
-    private RoleMapper roleMapper;
-//    注入附件表
-    @Autowired
-    private FileListMapper fileListMapper;
-    @Autowired
-    private FileListService fileListService;
 
-    @Autowired
+    private final InternalUserMapper internalUserMapper;
+
+    private final RoleMapper roleMapper;
+//    注入附件表
+    private final FileListMapper fileListMapper;
+
+    private final FileListService fileListService;
+
     private MenuMapper menuMapper;
+
+    public InteralUserServiceImpl(InternalUserMapper internalUserMapper, RoleMapper roleMapper, FileListMapper fileListMapper, FileListService fileListService) {
+        this.internalUserMapper = internalUserMapper;
+        this.roleMapper = roleMapper;
+        this.fileListMapper = fileListMapper;
+        this.fileListService = fileListService;
+    }
 
     @Override
     public List<InternalUser> getAll() {
@@ -97,8 +99,8 @@ public class InteralUserServiceImpl implements InternalUserService {
 
     /**
      * 修改用户
-     * @param internalUser
-     * @return
+     * @param internalUser internalUser
+     * @return internalUser
      */
     @Override
     @Transactional
@@ -161,7 +163,7 @@ public class InteralUserServiceImpl implements InternalUserService {
 
     /**
      * 删除用户
-     * @param id
+     * @param id id
      */
     @Override
     @Transactional
@@ -176,7 +178,7 @@ public class InteralUserServiceImpl implements InternalUserService {
          internalUserMapper.deleteById(id);
      }
         //  判断用户是否有头像 有的话删除关联的附件  这里不能先删除附件，因为附件表有外键关联，会报错
-     if (internalUser.getAvatarId() != null){
+        if (internalUser != null && internalUser.getAvatarId() != null) {
             FileListEntity fileList = fileListService.queryById(internalUser.getAvatarId());
             System.out.println("用户附件：" + fileList);
             // 检查删除结果
@@ -188,14 +190,18 @@ public class InteralUserServiceImpl implements InternalUserService {
 
     /**
      * 添加用户
-     *
-     * @param internalUser
-     * @return
+     * @param internalUser internalUser
+     * @return internalUser
      */
     @Override
     @Transactional
     public InternalUser add(InternalUser internalUser) {
         System.out.println("添加的用户信息：" + internalUser);
+//       先判断 username 是否存在
+        InternalUser oldUser = internalUserMapper.selectByUsername(internalUser.getUsername());
+        if (oldUser != null) {
+            throw new IllegalArgumentException("用户名已存在");
+        }
         // 先取roleIds数组集合
         List<Integer> roleIds = internalUser.getRoleIds();
 //        设置创建时间
@@ -207,7 +213,7 @@ public class InteralUserServiceImpl implements InternalUserService {
         // 直接从 LinkedHashMap 中获取 id
         LinkedHashMap<String, Object> avatarMap = (LinkedHashMap<String, Object>) internalUser.getAvatar();
         System.out.println("用户头像ID：" + avatarMap);
-       internalUser.setAvatarId((Integer) avatarMap.get("id"));
+        internalUser.setAvatarId((Integer) avatarMap.get("id"));
         // 先插入用户，让数据库生成自增ID
         internalUserMapper.insert(internalUser);
         System.out.println("插入后的用户ID：" + internalUser.getId());
@@ -225,10 +231,9 @@ public class InteralUserServiceImpl implements InternalUserService {
 
     /**
      * 登录
-     *
-     * @param username
-     * @param password
-     * @return
+     * @param username username
+     * @param password password
+     * @return Map 用户的信息、token、按钮权限
      */
     @Override
     public Map<String, Object> login(String username, String password) {

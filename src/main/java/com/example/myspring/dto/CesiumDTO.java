@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -23,5 +21,4 @@ public class CesiumDTO {
     private String trackmileage;
     private Date created_at;
     private Date updated_at;
-//    private List<WaypointDTO> waypoints;
 }

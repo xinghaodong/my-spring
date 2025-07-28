@@ -3,7 +3,6 @@ package com.example.myspring.controller;
 import com.example.myspring.config.ResponseDto;
 import com.example.myspring.entity.Menu;
 import com.example.myspring.service.MenuService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,8 +11,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/menus")
 public class MenuController {
-    @Autowired
-    private MenuService menuService;
+
+    private final MenuService menuService;
+
+    public MenuController(MenuService menuService) {
+        this.menuService = menuService;
+    }
 
     @RequestMapping()
     public ResponseDto<List<Menu>> getAll() {
@@ -30,7 +33,7 @@ public class MenuController {
 
     /**
      * 详情
-     * @param id
+     * @param id id
      */
     @RequestMapping("/detail")
     public ResponseDto<Menu> getById(@RequestParam Integer id) {
