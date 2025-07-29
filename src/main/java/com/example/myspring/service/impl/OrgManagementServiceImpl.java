@@ -7,6 +7,8 @@ import com.example.myspring.mapper.OrgManagementMapper;
 import com.example.myspring.service.OrgManagementService;
 import org.springframework.stereotype.Service;
 
+import javax.naming.LimitExceededException;
+import java.net.HttpRetryException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +78,21 @@ public class OrgManagementServiceImpl implements OrgManagementService {
         List<InternalUser> internalUsers = internalUserMapper.getUsersByOrganid(id);
         OrgManagement orgManagement = orgManagementMapper.selectById(id);
         orgManagement.setEmployees(internalUsers);
+        return orgManagement;
+    }
+
+    /**
+     * @param orgManagement orgManagement
+     * @return orgManagement
+     */
+    @Override
+    public OrgManagement update(OrgManagement orgManagement) {
+        Integer organid = orgManagement.getOrganid();
+        OrgManagement existing = orgManagementMapper.selectById(organid);
+        if (existing == null) {
+           throw new IllegalArgumentException("组织不存在");
+        }
+        orgManagementMapper.updateById(orgManagement);
         return orgManagement;
     }
 

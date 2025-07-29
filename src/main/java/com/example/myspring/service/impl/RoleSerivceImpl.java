@@ -35,7 +35,7 @@ public class RoleSerivceImpl implements RoleService {
 
     @Override
     public List<Role> getAll() {
-        return roleMapper.selectList(null);
+        return roleMapper.selectList(new QueryWrapper<>());
     }
 
     @Override
@@ -121,6 +121,7 @@ public class RoleSerivceImpl implements RoleService {
         if (existing != null) {
             throw new IllegalArgumentException("角色名称重复");
         }
+        role.setCreatedAt(LocalDateTime.now());
         roleMapper.insert(role);
         return role;
     }

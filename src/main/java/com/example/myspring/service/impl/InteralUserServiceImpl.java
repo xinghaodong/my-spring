@@ -1,5 +1,6 @@
 package com.example.myspring.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.myspring.entity.InternalUser;
 import com.example.myspring.entity.Menu;
@@ -29,13 +30,14 @@ public class InteralUserServiceImpl implements InternalUserService {
 
     private final FileListService fileListService;
 
-    private MenuMapper menuMapper;
+    private final MenuMapper menuMapper;
 
-    public InteralUserServiceImpl(InternalUserMapper internalUserMapper, RoleMapper roleMapper, FileListMapper fileListMapper, FileListService fileListService) {
+    public InteralUserServiceImpl(InternalUserMapper internalUserMapper, RoleMapper roleMapper, FileListMapper fileListMapper, FileListService fileListService, MenuMapper menuMapper) {
         this.internalUserMapper = internalUserMapper;
         this.roleMapper = roleMapper;
         this.fileListMapper = fileListMapper;
         this.fileListService = fileListService;
+        this.menuMapper = menuMapper;
     }
 
     @Override
@@ -248,7 +250,7 @@ public class InteralUserServiceImpl implements InternalUserService {
 //        这里先暂时写死后续在搞jtw 双token
         result.put("token", "123455");
 //        再获取用户所属的角色
-        List<Role> roleList = menuMapper.queryRoleIdsByMenuId(internalUser.getId());
+        List<Role> roleList = roleMapper.findRolesByUserId(internalUser.getId());
         System.out.println( "查询到的数据：" + roleList );
 //        再根据角色list便利查询菜单
         // 收集所有菜单（去重）
@@ -261,7 +263,7 @@ public class InteralUserServiceImpl implements InternalUserService {
 
         if(isSuperAdmin ){
 //          超管 查所有
-            menuSet.addAll(menuMapper.selectList( null)) ;
+            menuSet.addAll(menuMapper.selectList( new QueryWrapper<>())) ;
         }else {
             for ( Role role : roleList ){
                 List<Menu> menuList = menuMapper.findMenusByRoleId(role.getId());

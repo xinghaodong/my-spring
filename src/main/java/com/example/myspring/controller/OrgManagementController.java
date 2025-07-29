@@ -60,4 +60,14 @@ public class OrgManagementController {
         return ResponseDto.success(orgManagementService.detail(id));
     }
 
+    /**
+     * 修改组织信息
+     * @param orgManagement orgManagement
+     * @return 修改后的组织信息
+     */
+    @RequestMapping("/update")
+    public ResponseDto<OrgManagement> update(@RequestBody OrgManagement orgManagement) {
+        return ResponseDto.success(orgManagementService.update(orgManagement));
+    }
+
 }

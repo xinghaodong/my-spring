@@ -12,4 +12,6 @@ public interface OrgManagementService {
     void delete(Integer id);
 
     OrgManagement detail(Integer id);
+
+    OrgManagement update(OrgManagement orgManagement);
 }
