@@ -1,5 +1,6 @@
 package com.example.myspring.controller;
 
+import com.example.myspring.annotation.Public;
 import com.example.myspring.config.ResponseDto;
 import com.example.myspring.entity.InternalUser;
 import com.example.myspring.service.InternalUserService;
@@ -31,8 +32,8 @@ public class InternalUserController {
      * return 登录成功后的员工信息
      */
     @PostMapping("/auth/login")
+    @Public
     public ResponseDto<Map<String, Object>> login(@RequestBody Map<String, String> request) {
-        System.out.println(request);
         String username = request.get("username").trim();
         String password = request.get("password").trim();
         return ResponseDto.success(internalUserService.login(username, password));
@@ -82,5 +83,24 @@ public class InternalUserController {
         internalUserService.deleteUser(id.get("id"));
         return ResponseDto.success("删除成功",null);
 
+    }
+
+    /**
+     * 刷新token
+     * post 请求
+     */
+    @PostMapping("/auth/refresh")
+    @Public
+    public ResponseDto<Map<String, String>> refreshToken(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            return ResponseDto.fail("refreshToken 不能为空");
+        }
+        try {
+            Map<String, String> newTokens = internalUserService.refreshToken(refreshToken);
+            return ResponseDto.success(newTokens);
+        } catch (Exception e) {
+            return ResponseDto.fail("refresh token 验证失败");
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.myspring.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingPathVariableException;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     /*
@@ -42,6 +44,7 @@ public class GlobalExceptionHandler {
             // 其他未知异常才视为“系统错误”
             error = ResponseDto.fail("系统内部错误");
             status = HttpStatus.INTERNAL_SERVER_ERROR;
+            log.error("e: ", ex);
             // 建议打印日志：log.error("系统异常", ex);
         }
 

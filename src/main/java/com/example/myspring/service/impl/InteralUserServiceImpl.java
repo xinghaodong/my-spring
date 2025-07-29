@@ -12,6 +12,8 @@ import com.example.myspring.mapper.InternalUserMapper;
 import com.example.myspring.mapper.MenuMapper;
 import com.example.myspring.mapper.RoleMapper;
 import com.example.myspring.service.InternalUserService;
+import com.example.myspring.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,12 +34,15 @@ public class InteralUserServiceImpl implements InternalUserService {
 
     private final MenuMapper menuMapper;
 
-    public InteralUserServiceImpl(InternalUserMapper internalUserMapper, RoleMapper roleMapper, FileListMapper fileListMapper, FileListService fileListService, MenuMapper menuMapper) {
+    private final JwtUtil jwtUtil;
+
+    public InteralUserServiceImpl(InternalUserMapper internalUserMapper, RoleMapper roleMapper, FileListMapper fileListMapper, FileListService fileListService, MenuMapper menuMapper, JwtUtil jwtUtil) {
         this.internalUserMapper = internalUserMapper;
         this.roleMapper = roleMapper;
         this.fileListMapper = fileListMapper;
         this.fileListService = fileListService;
         this.menuMapper = menuMapper;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -189,6 +194,30 @@ public class InteralUserServiceImpl implements InternalUserService {
         }
     }
 
+    /**
+     * @param refreshToken refreshToken
+     * @return Map<String, String>
+     */
+    @Override
+    public Map<String, String> refreshToken(String refreshToken) {
+        Claims claims = jwtUtil.getClaimsFromRefreshToken(refreshToken);
+        if (claims == null || jwtUtil.isTokenExpired(claims)) {
+            throw new RuntimeException("refresh token 验证失败");
+        }
+
+        String username = claims.getSubject();
+        Integer userId = claims.get("userId", Integer.class);
+
+        // 重新生成 token
+        String newToken = jwtUtil.generateToken(userId, username);
+        String newRefreshToken = jwtUtil.generateRefreshToken(userId, username);
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("token", newToken);
+        tokens.put("refreshToken", newRefreshToken);
+
+        return tokens;
+    }
 
     /**
      * 添加用户
@@ -246,9 +275,13 @@ public class InteralUserServiceImpl implements InternalUserService {
         internalUser.setAvatar(fileListEntity);
         Map<String, Object> result = new HashMap<>();
         result.put("informationObject", internalUser);
-
+        // 生成 Token
+        String token = jwtUtil.generateToken(internalUser.getId(), internalUser.getUsername());
+        String refreshToken = jwtUtil.generateRefreshToken(internalUser.getId(), internalUser.getUsername());
+        result.put("token", token);
+        result.put("refreshToken", refreshToken);
 //        这里先暂时写死后续在搞jtw 双token
-        result.put("token", "123455");
+//        result.put("token", "123455");
 //        再获取用户所属的角色
         List<Role> roleList = roleMapper.findRolesByUserId(internalUser.getId());
         System.out.println( "查询到的数据：" + roleList );

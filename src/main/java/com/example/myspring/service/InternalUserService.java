@@ -24,4 +24,6 @@ public interface InternalUserService  {
     InternalUser updateUser(InternalUser internalUser) throws IOException;
 
     void deleteUser(Integer id);
+
+    Map<String, String> refreshToken(String refreshToken);
 }
