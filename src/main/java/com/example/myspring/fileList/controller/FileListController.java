@@ -1,10 +1,10 @@
 package com.example.myspring.fileList.controller;
 
 
+import com.example.myspring.annotation.Public;
 import com.example.myspring.config.ResponseDto;
 import com.example.myspring.fileList.entity.FileListEntity;
 import com.example.myspring.fileList.service.FileListService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,12 +14,15 @@ import java.util.List;
 @RequestMapping("/api/upload")
 public class FileListController  {
 
-    @Autowired
-    private FileListService fileListService;
+    private final FileListService fileListService;
+
+    public FileListController(FileListService fileListService) {
+        this.fileListService = fileListService;
+    }
 
     /**
      * 获取所有文件列表
-     * @return
+     * @return 文件列表
      */
     @RequestMapping("/list")
     public List<FileListEntity>  getAll(){
@@ -29,17 +32,19 @@ public class FileListController  {
 
     /**
      * 根据id 获取文件
-     * @param id
+     * @param id id
      */
+    @Public
     @RequestMapping("/detail")
-    public FileListEntity getById(@RequestParam(value = "id",required = true) Integer id){
+    public FileListEntity getById(@RequestParam(value = "id") Integer id){
         return fileListService.queryById(id);
     }
 
     /**
      * 附件上传
-     * @param
+     * @param avatar 文件
      */
+    @Public
     @PostMapping("/uploadFile")
     public ResponseDto<FileListEntity> uploadFile(@RequestParam("avatar") MultipartFile avatar) {
         System.out.println("上传文件：" + avatar);
@@ -56,7 +61,4 @@ public class FileListController  {
         }
         return null;
     }
-
-
-
 }

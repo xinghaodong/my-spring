@@ -31,11 +31,14 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // 检查是否带有 @Public 注解
+        // 检查是否带有 @Public 注解 放行 不校验
         if (handler instanceof HandlerMethod) {
+            System.out.println("handler: " + handler);
             HandlerMethod handlerMethod = (HandlerMethod) handler;
+            System.out.println("handlerMethod: " + handlerMethod);
             if (handlerMethod.hasMethodAnnotation(Public.class) ||
                     handlerMethod.getBeanType().isAnnotationPresent(Public.class)) {
+                System.out.println("Public: " + handlerMethod.getMethod().getName());
                 return true;
             }
         }

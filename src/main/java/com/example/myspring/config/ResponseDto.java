@@ -10,6 +10,10 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
+/*
+ * 响应数据结构
+ */
 public class ResponseDto<T> {
     private int code;
     private String message;

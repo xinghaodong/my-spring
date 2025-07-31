@@ -22,6 +22,8 @@ public class InternalUser {
 
     private String name;
 
+//    不返回给前端
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private String email;

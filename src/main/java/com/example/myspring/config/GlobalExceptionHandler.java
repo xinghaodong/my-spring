@@ -50,9 +50,4 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, status);
     }
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponseDto> handleAllExceptions(Exception ex) {
-//        ErrorResponseDto error = new ErrorResponseDto(500, "系统内部错误:     " + ex.getMessage());
-//        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
 }

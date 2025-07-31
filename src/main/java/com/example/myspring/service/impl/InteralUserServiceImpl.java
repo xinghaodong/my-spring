@@ -14,6 +14,7 @@ import com.example.myspring.mapper.RoleMapper;
 import com.example.myspring.service.InternalUserService;
 import com.example.myspring.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,7 @@ public class InteralUserServiceImpl implements InternalUserService {
     private final InternalUserMapper internalUserMapper;
 
     private final RoleMapper roleMapper;
-//    注入附件表
+    //    注入附件表
     private final FileListMapper fileListMapper;
 
     private final FileListService fileListService;
@@ -35,6 +36,7 @@ public class InteralUserServiceImpl implements InternalUserService {
     private final MenuMapper menuMapper;
 
     private final JwtUtil jwtUtil;
+
 
     public InteralUserServiceImpl(InternalUserMapper internalUserMapper, RoleMapper roleMapper, FileListMapper fileListMapper, FileListService fileListService, MenuMapper menuMapper, JwtUtil jwtUtil) {
         this.internalUserMapper = internalUserMapper;
@@ -74,7 +76,9 @@ public class InteralUserServiceImpl implements InternalUserService {
     }
 
     /**
-     * 根据用户名查询用户信息
+     * @param username username
+     *                 根据用户名查询用户信息
+     * @return internalUser
      */
     @Override
     public InternalUser getByUsername(String username) {
@@ -82,6 +86,12 @@ public class InteralUserServiceImpl implements InternalUserService {
         return internalUserMapper.selectByUsername(username);
     }
 
+    /**
+     * 根据id查询用户信息
+     *
+     * @param id id
+     * @return internalUser
+     */
     @Override
     @Transactional
     public InternalUser getById(Integer id) {
@@ -106,6 +116,7 @@ public class InteralUserServiceImpl implements InternalUserService {
 
     /**
      * 修改用户
+     *
      * @param internalUser internalUser
      * @return internalUser
      */
@@ -127,7 +138,7 @@ public class InteralUserServiceImpl implements InternalUserService {
         // 再获取传来的用户关联的角色
         List<Integer> newRoleIds = internalUser.getRoleIds();
         for (Integer roleId : newRoleIds) {
-        // 设置新的关联角色
+            // 设置新的关联角色
             internalUserMapper.addRole(internalUser.getId(), roleId);
         }
         // 处理头像更新
@@ -165,25 +176,26 @@ public class InteralUserServiceImpl implements InternalUserService {
         // 最后更新用户自身信息
         internalUser.setUpdatedAt(LocalDateTime.now());
         internalUserMapper.updateById(internalUser);
-            return internalUser;
+        return internalUser;
     }
 
     /**
      * 删除用户
+     *
      * @param id id
      */
     @Override
     @Transactional
     public void deleteUser(Integer id) {
-     InternalUser internalUser = internalUserMapper.selectById(id);
+        InternalUser internalUser = internalUserMapper.selectById(id);
 
-     System.out.println("删除的用户：" + internalUser);
-     if (internalUser != null && internalUser.getId() != 1){
+        System.out.println("删除的用户：" + internalUser);
+        if (internalUser != null && internalUser.getId() != 1) {
 //         先删除用户关联的角色 这里由于数据库是级联删除，所以这里不用写
 //         internalUserMapper.deleteRolesByUserId( id);
 //         再删除用户自身
-         internalUserMapper.deleteById(id);
-     }
+            internalUserMapper.deleteById(id);
+        }
         //  判断用户是否有头像 有的话删除关联的附件  这里不能先删除附件，因为附件表有外键关联，会报错
         if (internalUser != null && internalUser.getAvatarId() != null) {
             FileListEntity fileList = fileListService.queryById(internalUser.getAvatarId());
@@ -221,6 +233,7 @@ public class InteralUserServiceImpl implements InternalUserService {
 
     /**
      * 添加用户
+     *
      * @param internalUser internalUser
      * @return internalUser
      */
@@ -237,8 +250,12 @@ public class InteralUserServiceImpl implements InternalUserService {
         List<Integer> roleIds = internalUser.getRoleIds();
 //        设置创建时间
         internalUser.setCreatedAt(LocalDateTime.now());
-//        暂时先设置一个密码
-        internalUser.setPassword("888888");
+
+        // 使用 BCrypt 加密 对齐 Nest
+        String rawPassword = "888888";
+        String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt(10));
+        internalUser.setPassword(hashedPassword);
+        System.out.println("用户密码：" + internalUser.getPassword());
         //  头像
         System.out.println("用户头像：" + internalUser.getAvatar());
         // 直接从 LinkedHashMap 中获取 id
@@ -262,14 +279,23 @@ public class InteralUserServiceImpl implements InternalUserService {
 
     /**
      * 登录
+     *
      * @param username username
      * @param password password
      * @return Map 用户的信息、token、按钮权限
      */
     @Override
+    @Transactional
     public Map<String, Object> login(String username, String password) {
         InternalUser internalUser = getByUsername(username);
+        if (internalUser == null) {
+            throw new IllegalArgumentException("用户不存在");
+        }
         System.out.println("登录的用户：" + internalUser);
+        if (!BCrypt.checkpw(password, internalUser.getPassword())) {
+            throw new IllegalArgumentException("密码错误");
+        }
+
 //        查出用户头像
         FileListEntity fileListEntity = fileListService.queryById(internalUser.getAvatarId());
         internalUser.setAvatar(fileListEntity);
@@ -284,26 +310,26 @@ public class InteralUserServiceImpl implements InternalUserService {
 //        result.put("token", "123455");
 //        再获取用户所属的角色
         List<Role> roleList = roleMapper.findRolesByUserId(internalUser.getId());
-        System.out.println( "查询到的数据：" + roleList );
+        System.out.println("查询到的数据：" + roleList);
 //        再根据角色list便利查询菜单
         // 收集所有菜单（去重）
         Set<Menu> menuSet = new HashSet<>();
 //
-        System.out.println( "查询到的数据：" + roleList);
+        System.out.println("查询到的数据：" + roleList);
 
 //        判断 如果roleList包含了id是1的数据就证明他是超管 可以查询所有菜单
         boolean isSuperAdmin = roleList.stream().anyMatch(role -> role.getId() != null && role.getId() == 1);
 
-        if(isSuperAdmin ){
+        if (isSuperAdmin) {
 //          超管 查所有
-            menuSet.addAll(menuMapper.selectList( new QueryWrapper<>())) ;
-        }else {
-            for ( Role role : roleList ){
+            menuSet.addAll(menuMapper.selectList(new QueryWrapper<>()));
+        } else {
+            for (Role role : roleList) {
                 List<Menu> menuList = menuMapper.findMenusByRoleId(role.getId());
                 menuSet.addAll(menuList);
             }
         }
-        System.out.println( "查询到的菜单数据：" + menuSet);
+        System.out.println("查询到的菜单数据：" + menuSet);
 
 //        List<Role> roles = roleMapper.findRolesByUserId(internalUser.getId());
 //        System.out.println("用户角色ID：" + roles);
@@ -320,9 +346,5 @@ public class InteralUserServiceImpl implements InternalUserService {
 //        List<Menu> menus = RoleMapper.findMenusByRoleId();
 
         return result;
-//        更具用户名查询用户
-//        这里需要把 internalUser  对象都包装在一个对象里informationObject里
-//        InternalUser internalUser = getByUsername(username);
-//        return internalUser;
     }
 }

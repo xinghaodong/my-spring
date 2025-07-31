@@ -1,5 +1,6 @@
 package com.example.myspring.controller;
 
+import com.example.myspring.annotation.Public;
 import com.example.myspring.config.ResponseDto;
 import com.example.myspring.entity.Cesium;
 import com.example.myspring.service.CesiumService;
@@ -34,6 +35,7 @@ public class CesiumController {
      * @return 详情
      */
     @GetMapping("/detail")
+    @Public
     public ResponseDto<Cesium> getById(@RequestParam Integer id) {
         return ResponseDto.success(cesiumService.getById(id));
     }

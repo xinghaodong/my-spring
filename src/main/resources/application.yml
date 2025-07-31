@@ -16,11 +16,14 @@ spring:
 
 mybatis-plus:
    configuration:
-     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #sql日志输出
      mapUnderscoreToCamelCase: true
 
 jwt:
-  secret: kQ3vq5K2Vc8x7y9z0X1a2B3c4D5e6F7g8H9i0J1k2L3=
+  secret: kQ3vq5K2Vc8x7y9z0X1a2B3c4D5e6F7g8H9i0J1k2L3= #token key
   expire: 3600   # 1小时 (单位：秒)
-  refresh-secret: kQ3vq5K2Vc8x7y9z0X1a2B3c4D5e6F7g8H9i0J1k2L4=
+  refresh-secret: kQ3vq5K2Vc8x7y9z0X1a2B3c4D5e6F7g8H9i0J1k2L4= #rrefreshToken key
   refresh-expire: 86400  # 24小时
+
+# 创建用户时的默认密码
+DEFAULT_PASSWORD: 888888
