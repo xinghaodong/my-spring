@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.baomidou.mybatisplus.core.toolkit.Wrappers.lambdaQuery;
+
 @Service
 public class InteralUserServiceImpl implements InternalUserService {
 
@@ -126,7 +128,7 @@ public class InteralUserServiceImpl implements InternalUserService {
         // 先获取是否存在
         InternalUser oldUser = internalUserMapper.selectById(internalUser.getId());
         if (oldUser == null) {
-            return null;
+            throw new IllegalArgumentException("用户不存在");
         }
         // 再获取之前的用户关联的角色
         List<Role> oldRoleIds = roleMapper.findRolesByUserId(oldUser.getId());
@@ -245,6 +247,14 @@ public class InteralUserServiceImpl implements InternalUserService {
         InternalUser oldUser = internalUserMapper.selectByUsername(internalUser.getUsername());
         if (oldUser != null) {
             throw new IllegalArgumentException("用户名已存在");
+        }
+        // 检查邮箱是否重复
+        InternalUser exist = internalUserMapper.selectOne(
+                lambdaQuery(InternalUser.class)
+                        .eq(InternalUser::getEmail, internalUser.getEmail())
+        );
+        if (exist != null) {
+            throw new IllegalArgumentException("邮箱已存在");
         }
         // 先取roleIds数组集合
         List<Integer> roleIds = internalUser.getRoleIds();
