@@ -60,7 +60,7 @@ public class FileListServiceImpl implements FileListService {
         FileListEntity fileListEntity = new FileListEntity();
         fileListEntity.setFileName(avatar.getOriginalFilename());
         fileListEntity.setContentType(avatar.getContentType());
-        fileListEntity.setFilePath("/uploads/" + uniqueFilename);
+        fileListEntity.setFilePath("uploads/" + uniqueFilename);
         fileListEntity.setCreated_at(LocalDateTime.now());
         fileListEntity.setFileSize((int) avatar.getSize());
         // 插入数据库

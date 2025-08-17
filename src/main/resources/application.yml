@@ -8,6 +8,9 @@ spring:
     url: jdbc:mysql://localhost:3306/nestdatabase?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: 123456
+
+#    username: myuser       # 与NestJS保持一致
+#    password: 975115611qQ. # 与NestJS保持一致
     driver-class-name: com.mysql.cj.jdbc.Driver
   web:
     resources:

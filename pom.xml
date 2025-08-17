@@ -82,11 +82,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.example</groupId>
-            <artifactId>my-spring</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.example</groupId>-->
+<!--            <artifactId>my-spring</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>   -->
+<!--        </dependency>-->
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -118,7 +118,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.example.myspring.MySpringApplication</mainClass>
-                    <skip>true</skip>
+<!--                    <skip>true</skip>-->
                 </configuration>
                 <executions>
                     <execution>
