@@ -19,4 +19,8 @@ public interface MenuService {
 
 //    修改菜单
     Menu updateMenu(Menu menu);
+
+    List<Menu> getMenusByPid(Integer pid);
+
+    void saveMenuSort(List<Integer> ids);
 }

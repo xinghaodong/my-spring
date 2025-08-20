@@ -67,4 +67,21 @@ public class MenuController {
         return ResponseDto.success("修改成功", menu1);
     }
 
+   /*
+    * 根据父级id查询菜单
+    */
+    @RequestMapping("/getMenusByPid")
+    public ResponseDto<List<Menu>> getMenusByPid(@RequestParam(required = false) Integer pid) {
+        List<Menu> menuList = menuService.getMenusByPid(pid);
+        return ResponseDto.success(menuList);
+    }
+
+//    根据前端传入的id集合保存菜单主要实现重新排序的功能
+    @PostMapping("/saveMenuSort")
+    public ResponseDto<Void> saveMenuSort(@RequestBody List<Integer> ids) {
+        System.out.println(ids);
+        menuService.saveMenuSort(ids);
+        return ResponseDto.success("保存成功", null);
+    }
+
 }

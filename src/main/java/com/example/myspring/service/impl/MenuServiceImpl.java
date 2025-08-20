@@ -25,7 +25,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<Menu> getAll() {
-      List<Menu> menus = menuMapper.selectList(null);
+      List<Menu> menus = menuMapper.findAll();
 //        实现一个树形方法 返回
         return buildTree(menus);
     }
@@ -132,6 +132,22 @@ public class MenuServiceImpl implements MenuService {
             menuMapper.addMenusRole(id, role);
         }
         return menu;
+    }
+
+    @Override
+    public List<Menu> getMenusByPid(Integer pid) {
+        System.out.println(pid);
+        List<Menu> menus = menuMapper.findByParentId(pid);
+        System.out.println(menus);
+        return menus;
+    }
+
+    @Override
+    @Transactional
+    public void saveMenuSort(List<Integer> ids) {
+        for (int i = 0; i < ids.size(); i++) {
+            menuMapper.updateSort(ids.get(i), i + 1);
+        }
     }
 
     private List<Menu> buildTree(List<Menu> menus) {
